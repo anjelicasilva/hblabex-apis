@@ -28,35 +28,49 @@ def find_afterparties():
     """Search for afterparties on Eventbrite"""
 
     query = request.args.get('query')
-    location = request.args.get('location')
-    distance = request.args.get('distance')
-    measurement = request.args.get('measurement')
-    sort = request.args.get('sort')
+    # location = request.args.get('location')
+    # distance = request.args.get('distance')
+    # measurement = request.args.get('measurement')
+    # sort = request.args.get('sort')
 
     # If the required information is in the request, look for afterparties
-    if location and distance and measurement:
+    # if location and distance and measurement:
 
-        # The Eventbrite API requires the distance value to have a measurement
-        distance = distance + measurement
+    #     # The Eventbrite API requires the distance value to have a measurement
+    #     distance = distance + measurement
 
         # TODO: Look for afterparties!
 
         # - Make a request to the Eventbrite API to search for events that match
         #   the form data.
+    url = 'https://www.eventbriteapi.com/v3/events/search/'
+        # payload = {'q': query,
+        # 'location.address': location,
+        # 'location.within': distance,
+        # 'sort_by': sort,
+        # 'token': os.environ.get('EVENTBRITE_TOKEN')}
+
+    payload = {'q': query, 'token': os.environ.get('EVENTBRITE_TOKEN')}
+
         # - (Make sure to save the JSON data from the response to the data
-        #   variable so that it can display on the page as well.)
+    response = requests.get(url, params=payload)
+    print(response.content)
+    data = response.json()
+    #   variable so that it can display on the page as well.)
+    print(data)
+    # print(data['events']['name']['text'])
 
-        data = {'This': ['Some', 'mock', 'JSON']}
-        events = []
+    # data = {'This': ['Some', 'mock', 'JSON']}
+    events = ['events']
 
-        return render_template("afterparties.html",
-                               data=pformat(data),
-                               results=events)
+    return render_template("afterparties.html",
+                           data=pformat(data),
+                           results=events)
 
     # If the required info isn't in the request, redirect to the search form
-    else:
-        flash("Please provide all the required information!")
-        return redirect("/afterparty-search")
+    # else:
+    #     flash("Please provide all the required information!")
+    #     return redirect("/afterparty-search")
 
 
 @app.route("/create-event", methods=['GET'])
